@@ -1,0 +1,46 @@
+module Moore_FSM(x_in,clock,reset,y_out);
+
+	input x_in,clock,reset;
+	output[1:0] y_out;
+
+	reg[1:0] state;
+	parameter a=2'b00,b=2'b01,c=2'b10,d=2'b11;
+
+	always @(posedge clock,negedge reset)
+		if(reset==0)state<=a;
+		else case(state) //DesignByGraph
+			a:if(~x_in)state<=c;else state<=b;
+			b:if(x_in)state<=d;else state<=c;
+			c:if(x_in)state<=d;else state<=b;
+			d:if(~x_in)state<=a;else state<=c;
+		endcase
+	assign y_out=state;
+endmodule
+
+module main;
+	wire[1:0] t_y_out;
+	reg t_xin,t_clock,t_reset;
+
+	Moore_FSM M(t_xin,t_clock,t_reset,t_y_out[1:0]);
+	initial #200 $finish;
+	initial begin
+
+		t_reset=0;
+		t_clock=0;
+		#5 t_reset=1;
+		forever
+		#5 t_clock=~t_clock;
+	end
+	initial begin
+
+		//InformationModule
+		t_xin=0;
+		#15 t_xin=1;
+		forever
+		#10 t_xin=~t_xin;
+
+		$dumpfile("verilog.vcd");
+		$dumpvars;
+
+	end
+endmodule

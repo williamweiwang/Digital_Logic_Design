@@ -1,0 +1,17 @@
+`timescale 1ns/100ps
+
+module t_Simple_Circuit_prop_delay;
+
+   wire d, e;
+   reg a, b, c;
+
+   Simple_Circuit_prop_delay M1 (a, b, c, d, e);
+   initial
+   begin
+	   a = 1'b0; b = 1'b0; c = 1'b0;
+	   #100 a = 1'b1; b = 1'b1; c = 1'b1;
+   end
+   initial #200 $finish;
+
+   initial $dumpvars;
+endmodule
